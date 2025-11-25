@@ -21,5 +21,11 @@ jobs:
           displayName: 'Run a multi-line script'
 
   - job: SecondJob
+    dependsOn: FirstJob
     steps:
       - script: echo " This is from SecondJob"
+
+  - job: ThirdJob
+    dependsOn: SecondJob
+    steps:
+      - script: echo " This is from ThirdJob"
