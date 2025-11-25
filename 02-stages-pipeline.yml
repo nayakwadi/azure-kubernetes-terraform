@@ -4,36 +4,41 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
+  - main
 
 pool:
   vmImage: ubuntu-latest
 
 stages:
-- stage: BuildStage
-  jobs:
-  - job: BuildJob
-    steps:
-    - script: echo BuildJobStep1
+  - stage: BuildStage
+    jobs:
+      - job: BuildJob
+        steps:
+          - script: echo BuildJobStep1
 
-    - script: echo BuildJobStep2
+          - script: echo BuildJobStep2
 
-- stage: DevDeployStage
-  jobs:
-  - job: DevDeployJob
-    steps:
-    - script: echo Deploy to Dev
+  - stage: DevDeployStage
+    dependsOn: BuildStage
+    jobs:
+      - job: DevDeployJob
+        steps:
+          - script: echo Deploy to Dev
 
-- stage: QADeployStage
-  jobs:
-  - job: QADeployJob
-    steps:
-    - script: echo Deploy to QA
+  - stage: QADeployStage
+    dependsOn:
+      - BuildStage
+      - DevDeployStage
+    jobs:
+      - job: QADeployJob
+        steps:
+          - script: echo Deploy to QA
 
-- stage: ProdDeployStage
-  jobs:
-  - job: ProdDeployJob
-    steps:
-    - script: echo Deploy to Prod
-
-
+  - stage: ProdDeployStage
+    dependsOn:
+      - DevDeployStage
+      - QADeployStage
+    jobs:
+      - job: ProdDeployJob
+        steps:
+          - script: echo Deploy to Prod
