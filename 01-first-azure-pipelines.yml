@@ -23,9 +23,14 @@ jobs:
   - job: SecondJob
     dependsOn: FirstJob
     steps:
-      - script: echo " This is from SecondJob"
+      - script: echo This is from SecondJob
 
   - job: ThirdJob
-    dependsOn: SecondJob
+    dependsOn: FirstJob
     steps:
-      - script: echo " This is from ThirdJob"
+      - script: echo This is from ThirdJob
+
+  - job: FourthJob
+    dependsOn: ThirdJob
+    steps:
+      - script: echo This is from FourthJob
