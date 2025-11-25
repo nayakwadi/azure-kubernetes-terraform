@@ -14,31 +14,55 @@ stages:
     jobs:
       - job: BuildJob
         steps:
-          - script: echo BuildJobStep1
+          - bash: echo Build FirstJob
+          - bash: echo $(PipelineLevelVariable)
+          - bash: echo $(Build.BuildNumber)
+          - bash: echo $(Build.BuildId)
+          - bash: echo $(Build.SourceBranchName)
+          - bash: echo $(Build.SourcesDirectory)
+          - bash: echo $(System.DefaultWorkingDirectory)
+          - bash: ls -R $(System.DefaultWorkingDirectory)
+          - bash: echo $(Build.ArtifactStagingDirectory)
+          - bash: java -version
+          - bash: node --version
+          - bash: python --version
+          - bash: mvn -version
+          - bash: ls -R $(Build.ArtifactStagingDirectory)
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: "$(System.DefaultWorkingDirectory)"
+              Contents: |
+                **/*.yaml
+                **/*.tf
+              TargetFolder: "$(Build.ArtifactStagingDirectory)"
+          - bash: ls -R $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              ArtifactName: "drop"
+              publishLocation: "Container"
 
-          - script: echo BuildJobStep2
+  # - stage: DevDeployStage
+  #   dependsOn: BuildStage
+  #   jobs:
+  #     - job: DevDeployJob
+  #       steps:
+  #         - script: echo Deploy to Dev
 
-  - stage: DevDeployStage
-    dependsOn: BuildStage
-    jobs:
-      - job: DevDeployJob
-        steps:
-          - script: echo Deploy to Dev
+  # - stage: QADeployStage
+  #   dependsOn:
+  #     - BuildStage
+  #     - DevDeployStage
+  #   jobs:
+  #     - job: QADeployJob
+  #       steps:
+  #         - script: echo Deploy to QA
 
-  - stage: QADeployStage
-    dependsOn:
-      - BuildStage
-      - DevDeployStage
-    jobs:
-      - job: QADeployJob
-        steps:
-          - script: echo Deploy to QA
-
-  - stage: ProdDeployStage
-    dependsOn:
-      - DevDeployStage
-      - QADeployStage
-    jobs:
-      - job: ProdDeployJob
-        steps:
-          - script: echo Deploy to Prod
+  # - stage: ProdDeployStage
+  #   dependsOn:
+  #     - DevDeployStage
+  #     - QADeployStage
+  #   jobs:
+  #     - job: ProdDeployJob
+  #       steps:
+  #         - script: echo Deploy to Prod
