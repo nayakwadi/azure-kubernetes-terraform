@@ -11,7 +11,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  tag: '$(Build.BuildId)'
+  tag: 73 # '$(Build.BuildId)'
 
 stages:
 - stage: BuildAndPush
@@ -22,18 +22,24 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: Docker@2
-      displayName: Build and Push to Image
+    # - task: Docker@2
+    #   displayName: Build and Push to Image
+    #   inputs:
+    #     containerRegistry: 'svcconn-dockerhub'
+    #     repository: 'snayakwadi41/currency-exchange'
+    #     command: 'buildAndPush'
+    #     Dockerfile: '**/Dockerfile'
+    #     tags: '$(tag)'
+
+    - task: CopyFiles@2
       inputs:
-        containerRegistry: 'svcconn-dockerhub'
-        repository: 'snayakwadi41/currency-exchange'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(tag)'
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: '**/*.yaml'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: 'S(Build.ArtifactStagingDirectory'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: manifests
         publishLocation: Container
 
@@ -58,7 +64,7 @@ stages:
           connectionType: 'kubernetesServiceConnection'
           kubernetesServiceConnection: 'k8stest-dev-svcconn'
           namespace: 'default'
-          manifests: '$(System.ArtifactsDirectory)/deployment.yaml'
-          containers: 'snayakwadi41/currency-exchange:${tag}'
+          manifests: '$(System.ArtifactsDirectory)/configuration/kubernetes/deployment.yaml'
+          containers: 'snayakwadi41/currency-exchange:$(tag)'
 
 
