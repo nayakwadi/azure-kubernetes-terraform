@@ -1,6 +1,17 @@
 # Currency Exchange Micro Service - H2
 
-Run com.in28minutes.microservices.currencyconversionservice.CurrencyConversionServiceApplicationH2 as a Java Application.
+This is a simple Java project which provides Currency Conversion Service using H2 for local storage and maven as build tool.
+Install java, maven on your local machine
+Open a command propmt, go to the project path folder where there is pom.xml file exists
+execute below commands, one by one:
+1. mvn clean
+2. mvn build
+3. mvn compile
+4. mvn test
+5. mvn install
+6. mvn pacakge (this will display the path where .jar file is generated)
+7. run command java -jar <path for .jar file from above step>
+8. Open broweser and go to http://localhost:8000/currency-exchange/from/USD/to/INR
 
 ## Resources
 
@@ -16,42 +27,17 @@ Run com.in28minutes.microservices.currencyconversionservice.CurrencyConversionSe
 }
 ```
 
-## H2 Console
 
-- http://localhost:8000/h2-console
-- Use `jdbc:h2:mem:testdb` as JDBC URL
-
-
-## Notes
-
-## Tables Created
-```
-create table exchange_value 
-(
-	id bigint not null, 
-	conversion_multiple decimal(19,2), 
-	currency_from varchar(255), 
-	currency_to varchar(255), 
-	primary key (id)
-)
-```
 
 ## Containerization
 
 ### Troubleshooting
 
-- Problem - Caused by: com.spotify.docker.client.shaded.javax.ws.rs.ProcessingException: java.io.IOException: No such file or directory
-- Solution - Check if docker is up and running!
-- Problem - Error creating the Docker image on MacOS - java.io.IOException: Cannot run program “docker-credential-osxkeychain”: error=2, No such file or directory
-- Solution - https://medium.com/@dakshika/error-creating-the-docker-image-on-macos-wso2-enterprise-integrator-tooling-dfb5b537b44e
 
 ### Creating Container
 
-- mvn package
 
 ### Running Container
 
 #### Basic
-```
-docker container run --publish 8000:8000 in28min/currency-exchange:0.0.1-SNAPSHOT
-```
+
